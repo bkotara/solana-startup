@@ -39,7 +39,9 @@ Also, always feel free to turn to the [Solana Discord](https://solana.com/discor
 
 ### Setup Your Failover Node for Testnet
 
-SSH in to your mainnet failover node (we're setting it up as testnet first to practice failing over).
+SSH to your mainnet failover node (we're setting it up as testnet first to practice failing over).
+
+#### User Setup
 
 Be sure to setup a non-root user before you get rolling. I user 2 non-root users, one w/ sudo access and a sol user w/out sudo. This is not strictly necessary, but make sure you're not using root at a minimum.
 
@@ -50,6 +52,63 @@ $ sudo adduser sol <username> # adds a sudo user
 $ sudo usermod -aG sudo <username> # grants `sudo` to an existing user
 ```
 
+#### General Setup
+
+Make sure you're node is up to date and has the proper packages (note: this step requires `sudo`)
+```
+$ sudo apt update
+$ sudo apt upgrade
+$ sudo apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler
+```
+
+#### Security Recommendations
+
+It's recommended to use [fail2ban](https://github.com/fail2ban/fail2ban) out of the box.
+```
+$ sudo apt install fail2ban
+```
+
+It's also recommended to only open the necessary ports for operation w/ a firewall - ufw is a great option. DigitalOcean has a great guide for ufw [here](https://www.digitalocean.com/community/tutorials/ufw-essentials-common-firewall-rules-and-commands).
+```
+$ sudo apt install ufw
+```
 
 
+Here's a quick cheat sheet for what the validator needs:
+```
+$ sudo ufw allow 22/tcp # We need ssh to work!
+$ sudo ufw allow 8000:10000/tcp # Really, we only need to allow the port range the validator is using; i.e. 8000:8020 (depending on your run script)
+$ sudo ufw allow 8000:10000/udp # Same as the above
+# sudo ufw allow 8900,8899/tcp # If you're allowing RPC access - not recommended for mainnet
+$ sudo ufw enable
+```
 
+You can always check the status of ufw with:
+```
+$ sudo ufw status
+```
+
+#### Hard Drive Setup
+
+Good guide on this [here](https://docs.anza.xyz/operations/setup-a-validator#hard-drive-setup).
+
+Consolidated commands (assuming you have two NVMEs attached):
+```
+$ sudo mkfs -t ext4 /dev/nvme0n1
+$ sudo mkfs -t ext4 /dev/nvme1n1
+$ sudo mkdir -p /mnt/ledger
+$ sudo mkdir -p /mnt/accounts
+$ sudo mount /dev/nvme0n1 /mnt/ledger
+$ sudo mount /dev/nvme1n1 /mnt/accounts
+
+# Make your sol user the owner
+$ sudo chown -R sol:sol /mnt/ledger
+$ sudo chown -R sol:sol /mnt/accounts
+```
+
+
+#### Optimizations
+
+Again, this can be found [here](https://docs.anza.xyz/operations/setup-a-validator#optimize-sysctl-knobs)
+
+No need to worry about [this](https://docs.anza.xyz/operations/setup-a-validator#increase-systemd-and-session-file-limits) as we'll be setting up a service for the validator script.
