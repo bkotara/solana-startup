@@ -37,6 +37,13 @@ Also, always feel free to turn to the [Solana Discord](https://solana.com/discor
 
 ## Testnet
 
+### Setup Keys
+
+Quick guide link [here](https://docs.anza.xyz/operations/setup-a-validator#create-keys).
+
+Be sure to keep your authorized withrawer key safe! Official [docs](https://docs.anza.xyz/operations/best-practices/security#do-not-store-your-withdrawer-key-on-your-validator-machine) here.
+
+
 ### Setup Your Failover Node for Testnet
 
 SSH to your mainnet failover node (we're setting it up as testnet first to practice failing over).
@@ -106,9 +113,12 @@ $ sudo chown -R sol:sol /mnt/ledger
 $ sudo chown -R sol:sol /mnt/accounts
 ```
 
-
 #### Optimizations
 
 Again, this can be found [here](https://docs.anza.xyz/operations/setup-a-validator#optimize-sysctl-knobs)
 
 No need to worry about [this](https://docs.anza.xyz/operations/setup-a-validator#increase-systemd-and-session-file-limits) as we'll be setting up a service for the validator script.
+
+#### Validator Runtime
+
+Copy your testnet
