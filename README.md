@@ -43,7 +43,6 @@ Quick guide link [here](https://docs.anza.xyz/operations/setup-a-validator#creat
 
 Be sure to keep your authorized withrawer key safe! Official [docs](https://docs.anza.xyz/operations/best-practices/security#do-not-store-your-withdrawer-key-on-your-validator-machine) here.
 
-
 ### Setup Your Failover Node for Testnet
 
 SSH to your mainnet failover node (we're setting it up as testnet first to practice failing over).
@@ -119,6 +118,57 @@ Again, this can be found [here](https://docs.anza.xyz/operations/setup-a-validat
 
 No need to worry about [this](https://docs.anza.xyz/operations/setup-a-validator#increase-systemd-and-session-file-limits) as we'll be setting up a service for the validator script.
 
-#### Validator Runtime
+#### Validator Install
 
-Copy your testnet
+Be sure to copy your validator identity and vote-account keypairs to your faiilover node. Reminder: your authorized withdrawer keypair should never be on your validator node - there is no need and it only adds security concerns.
+
+It's recommended to build from source - and it's good to know how to - so that's what we'll do now.
+
+Switch to your sol user:
+```
+$ su - sol
+```
+
+Make sure you have Rust installed for the `sol` user:
+```
+curl https://sh.rustup.rs -sSf | sh
+source $HOME/.cargo/env
+rustup component add rustfmt
+rustup update
+```
+
+I like keeping things clean, so I put all of my repos and source code in `~/developer` - do as you please.
+
+```
+$ mkdir developer
+$ cd developer
+```
+
+Grab the release tag you want to run - these can be found [here](https://github.com/anza-xyz/agave/releases).
+```
+$ export VERSION="2.0.18" # example
+$ wget "https://github.com/anza-xyz/agave/archive/refs/tags/v$VERSION.tar.gz"
+$ tar -xvzf "v$VERSION.tar.gz" && rm "v$VERSION.tar.gz"
+$ cd "agave-$VERSION"
+$ scripts/cargo-install-all.sh --validator-only ~/.local/share/solana/install/releases/v"$VERSION"
+```
+
+Now let's set the active solana release:
+```
+$ ln -snf "/home/sol/.local/share/solana/install/releases/v$VERSION" /home/sol/.local/share/solana/install/active_release
+```
+
+The above command links the release you just installed to the `active_release` path. This is just a convenient way to manage multiple releases - for upgrades etc.
+
+Finally, let's add the `active_release` path to your sol user's path:
+```
+$ echo 'export PATH="/home/sol/.local/share/solana/install/active_release/bin":"$PATH"' >> ~/.bashrc
+$ source ~/.bashrc
+```
+
+Now you can run `solana --version` and you should see whatever version you exported above.
+
+If you're instead planning on running Jito you can modify the above commands to checkout the proper git release (instead of downloading/unzipping) and build from there. [Here](https://jito-foundation.gitbook.io/mev/jito-solana/building-the-software#initial-setup) are Jito's offical docs.
+
+#### Validator Service
+
