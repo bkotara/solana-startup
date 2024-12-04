@@ -251,7 +251,7 @@ Once you have the node operational (the same run script should work) you can che
 
 You can validate this against this command:
 ```bash
-solana-keygan pubkey unstaked-identity.json # note that identity.json should work here, too, since it's a symlink to unstaked-identity.json
+solana-keygen pubkey unstaked-identity.json # note that identity.json should work here, too, since it's a symlink to unstaked-identity.json
 ```
 
 #### Setup the Failover Scripts
