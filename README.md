@@ -12,7 +12,7 @@ Some other super useful links:
 This walkthorugh is intended to get you setup with operational testnet and maninet nodes as well as a mainnet failover.
 
 It's not intended to be exhaustive. And the expectation is you understand things such as:
-- how to setup a remote server (obviosuly)
+- how to setup a remote server (obviously)
 - how to use SSH
 - the general basics of navigating a remote server with the command line
 - bash scripting
