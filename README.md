@@ -167,8 +167,62 @@ $ source ~/.bashrc
 ```
 
 Now you can run `solana --version` and you should see whatever version you exported above.
+```
+solana-cli 2.0.18 (src:00000000; feat:607245837, client:Agave) # For the 2.0.18 example above
+```
 
 If you're instead planning on running Jito you can modify the above commands to checkout the proper git release (instead of downloading/unzipping) and build from there. [Here](https://jito-foundation.gitbook.io/mev/jito-solana/building-the-software#initial-setup) are Jito's offical docs.
 
 #### Validator Service
 
+Create a startup script as shown [here](https://docs.anza.xyz/operations/setup-a-validator#create-a-validator-startup-script).
+
+*Note that this example script has `--rpc-port 8899` and does not have `--private-rpc` - if you plan on running like this in testnet, be sure you have ports 8899 and 8900 open in ufw.*
+
+*Also note that this script is setting `--dynamic-port-range 8000-8020` so your ufw config only needs to open those up for upd/tcp instead of the 8000:10000 (shown above).*
+
+It's a good idea to confirm your script runs by [executing it directly](https://docs.anza.xyz/operations/setup-a-validator#verifying-your-validator-is-working) and [checking the logs](https://docs.anza.xyz/operations/setup-a-validator#verifying-your-validator-is-working).
+
+Now, let's make a [systemd unit](https://docs.anza.xyz/operations/guides/validator-start/#systemd-unit) to ensure the script runs in the background.
+
+Put this content in `/etc/systemd/system/sol.service`:
+```
+[Unit]
+Description=Solana Validator
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=sol
+LimitNOFILE=1000000
+LogRateLimitIntervalSec=0
+Environment="PATH=/bin:/usr/bin:/home/sol/.local/share/solana/install/active_release/bin"
+ExecStart=/home/sol/bin/validator.sh
+
+[Install]
+WantedBy=multi-user.target
+```
+
+To start it:
+```
+sudo systemctl enable --now sol
+```
+
+*Note that Environment here is pointing to your active release (set above)*
+
+[Here's](https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units) a good DigitalOcean guide on how to use systemctl.
+
+Finally, configure log rotation as shown [here](https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units).
+
+At this point, you should have a running validator (via systemd) with log rotation enabled. You can tail logs to see it running or use the monitor command:
+```
+$ agave-validator --ledger /mnt/ledger/ monitor
+```
+
+You can also use the catchup command to watch your validator catch up to the network:
+```
+$ solana catchup -ut --our-localhost 8899  # be sure to use `-ut` here since this is a testnet validator
+```
