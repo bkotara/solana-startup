@@ -178,7 +178,7 @@ Create a startup script as shown [here](https://docs.anza.xyz/operations/setup-a
 
 *Note that this example script has `--rpc-port 8899` and does not have `--private-rpc` - if you plan on running like this in testnet, be sure you have ports 8899 and 8900 open in ufw.*
 
-*Also note that this script is setting `--dynamic-port-range 8000-8020` so your ufw config only needs to open those up for upd/tcp instead of the 8000:10000 (shown above).*
+*Also note that this script is setting `--dynamic-port-range 8000-8020` so your ufw config only needs to open those up for upd/tcp instead of the 8000:10000 (shown [above](#security-recommendations)).*
 
 It's a good idea to confirm your script runs by [executing it directly](https://docs.anza.xyz/operations/setup-a-validator#verifying-your-validator-is-working) and [checking the logs](https://docs.anza.xyz/operations/setup-a-validator#verifying-your-validator-is-working).
 
@@ -221,7 +221,7 @@ At this point, you should have a running validator (via systemd) with log rotati
 agave-validator --ledger /mnt/ledger/ monitor
 ```
 
-You can also use the catchup command to watch your validator catch up to the network:
+You can also use the `catchup` command to watch your validator catch up to the network:
 ```bash
 solana catchup -ut --our-localhost 8899  # be sure to use `-ut` here since this is a testnet validator
 ```
