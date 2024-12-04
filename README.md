@@ -43,7 +43,7 @@ Quick guide link [here](https://docs.anza.xyz/operations/setup-a-validator#creat
 
 Be sure to keep your authorized withrawer key safe! Official [docs](https://docs.anza.xyz/operations/best-practices/security#do-not-store-your-withdrawer-key-on-your-validator-machine) here.
 
-### Setup Your Failover Node for Testnet
+### Setup your Failover Node for Testnet
 
 SSH to your mainnet failover node (we're setting it up as testnet first to practice failing over).
 
@@ -122,7 +122,7 @@ No need to worry about [this](https://docs.anza.xyz/operations/setup-a-validator
 
 Be sure to copy your validator identity and vote-account keypairs to your faiilover node. Reminder: your authorized withdrawer keypair should never be on your validator node - there is no need and it only adds security concerns.
 
-Also, at this point we can begin integrating the failover requirements, one of which is having a junk identity on both your primay and failover node. [Here](https://pumpkins-pool.gitbook.io/pumpkins-pool#generating-junk-identities) are the docs for this. 
+Also, at this point we can begin integrating the failover requirements, one of which is having a junk identity on both your primay and failover node. [Here](https://pumpkins-pool.gitbook.io/pumpkins-pool#generating-junk-identities) are the docs for this. Note that each node should have its own junk identity.
 
 It's recommended to build from source - and it's good to know how to - so that's what we'll do now.
 
@@ -184,6 +184,8 @@ Create a startup script as shown [here](https://docs.anza.xyz/operations/setup-a
 
 We'll want to modify the script to have the `--authorized-voter` flag set as shown [here](https://pumpkins-pool.gitbook.io/pumpkins-pool#validator-startup-script-modifications).
 
+We'll also need to setup the necessary symlink for our primary identity as shown [here](https://pumpkins-pool.gitbook.io/pumpkins-pool#creating-identity-symlinks). Because we're going to use this as testnet primary and then failover to our actual testnet node, be sure to set your actual identity as the identity.json at this time.
+
 [Here's](./testnet-validator.sh) an example run script for testnet with the failover modifications.
 
 It's a good idea to confirm your script runs by [executing it directly](https://docs.anza.xyz/operations/setup-a-validator#verifying-your-validator-is-working) and [checking the logs](https://docs.anza.xyz/operations/setup-a-validator#verifying-your-validator-is-working).
@@ -227,7 +229,50 @@ At this point, you should have a running validator (via systemd) with log rotati
 agave-validator --ledger /mnt/ledger/ monitor
 ```
 
+*Note: when you run the above command, the output will show you your active identity - this should match your actual testnet identity public key.*
+
 You can also use the `catchup` command to watch your validator catch up to the network:
 ```bash
 solana catchup -ut --our-localhost 8899  # be sure to use `-ut` here since this is a testnet validator
 ```
+
+## Failover
+
+#### Configure your Testnet Node
+
+At this point, much of your work is rinse/repeat. Start from [here](#setup-your-failover-node-for-testnet) and get your testnet node ready to run.
+
+This time, instead of symlinking your primary identity to the identity.json file, use the [unstaked identity](https://pumpkins-pool.gitbook.io/pumpkins-pool#creating-identity-symlinks); i.e. the junk identity.
+```bash
+ln -sf /home/sol/unstaked-identity.json /home/sol/identity.json
+```
+
+Once you have the node operational (the same run script should work) you can check the validator's status with the `monitor` command. This time, the identity should be that of your unstaked identity; i.e. the pub key of the junk identity we created on this node.
+
+You can validate this against this command:
+```bash
+solana-keygan pubkey unstaked-identity.json # note that identity.json should work here, too, since it's a symlink to unstaked-identity.json
+```
+
+#### Setup the Failover Scripts
+
+You can follow [these](https://pumpkins-pool.gitbook.io/pumpkins-pool#transition-process) example scripts to do the actual failover.
+
+Note that these scripts will require SSH access from node to node as the `sol` user. You can always modify these scripts to run from your local box if you prefer.
+
+On both nodes you should have `initiate_failover.sh` and `complete_failover.sh` scripts so you can switch both directions.
+
+#### Failover to your Testnet Node
+
+Before running the failover, it's important to check if it's caught up - otherwise you'll exprience downtime. You can do this with the `catchup` command shown above.
+
+If your testnet validator is all caught up, you can initiate failover by first by running `./initiate_failover.sh` on your active node and then (sequentially) `./complete_failover.sh` on your inactive node.
+
+Once these scripts have completed you can use the `monitor` command on each node to confirm the new identities.
+
+You can also check your validator's IP in the `gossip` command (it should match your testnet node):
+```
+solana gossip -ut | grep $(solanan-keygen pubkey validator-keypair.json)
+```
+
+If all is well, then you've successsfully failed over to your testnet node!
