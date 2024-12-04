@@ -210,7 +210,7 @@ To start it:
 sudo systemctl enable --now sol
 ```
 
-*Note that Environment here is pointing to your active release (set above)*
+*Note that Environment here is pointing to your active release (set above).*
 
 [Here's](https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units) a good DigitalOcean guide on how to use systemctl.
 
