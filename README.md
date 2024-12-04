@@ -122,6 +122,8 @@ No need to worry about [this](https://docs.anza.xyz/operations/setup-a-validator
 
 Be sure to copy your validator identity and vote-account keypairs to your faiilover node. Reminder: your authorized withdrawer keypair should never be on your validator node - there is no need and it only adds security concerns.
 
+Also, at this point we can begin integrating the failover requirements, one of which is having a junk identity on both your primay and failover node. [Here](https://pumpkins-pool.gitbook.io/pumpkins-pool#generating-junk-identities) are the docs for this. 
+
 It's recommended to build from source - and it's good to know how to - so that's what we'll do now.
 
 Switch to your sol user:
@@ -179,6 +181,10 @@ Create a startup script as shown [here](https://docs.anza.xyz/operations/setup-a
 *Note that this example script has `--rpc-port 8899` and does not have `--private-rpc` - if you plan on running like this in testnet, be sure you have ports 8899 and 8900 open in ufw.*
 
 *Also note that this script is setting `--dynamic-port-range 8000-8020` so your ufw config only needs to open those up for upd/tcp instead of the 8000:10000 (shown [above](#security-recommendations)).*
+
+We'll want to modify the script to have the `--authorized-voter` flag set as shown [here](https://pumpkins-pool.gitbook.io/pumpkins-pool#validator-startup-script-modifications).
+
+[Here's](./testnet-validator.sh) an example run script for testnet with the failover modifications.
 
 It's a good idea to confirm your script runs by [executing it directly](https://docs.anza.xyz/operations/setup-a-validator#verifying-your-validator-is-working) and [checking the logs](https://docs.anza.xyz/operations/setup-a-validator#verifying-your-validator-is-working).
 
