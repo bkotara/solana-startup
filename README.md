@@ -52,7 +52,7 @@ SSH to your mainnet failover node (we're setting it up as testnet first to pract
 Be sure to setup a non-root user before you get rolling. I user 2 non-root users, one w/ sudo access and a sol user w/out sudo. This is not strictly necessary, but make sure you're not using root at a minimum.
 
 Add user helpers:
-```
+```bash
 $ sudo adduser <username> # adds a non-sudo user
 $ sudo adduser sol <username> # adds a sudo user 
 $ sudo usermod -aG sudo <username> # grants `sudo` to an existing user
@@ -60,8 +60,8 @@ $ sudo usermod -aG sudo <username> # grants `sudo` to an existing user
 
 #### General Setup
 
-Make sure you're node is up to date and has the proper packages (note: this step requires `sudo`)
-```
+Make sure you're node is up to date and has the proper packages (note: this step requires `sudo`):
+```bash
 $ sudo apt update
 $ sudo apt upgrade
 $ sudo apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake make libprotobuf-dev protobuf-compiler
@@ -70,18 +70,18 @@ $ sudo apt install libssl-dev libudev-dev pkg-config zlib1g-dev llvm clang cmake
 #### Security Recommendations
 
 It's recommended to use [fail2ban](https://github.com/fail2ban/fail2ban) out of the box.
-```
+```bash
 $ sudo apt install fail2ban
 ```
 
 It's also recommended to only open the necessary ports for operation w/ a firewall - ufw is a great option. DigitalOcean has a great guide for ufw [here](https://www.digitalocean.com/community/tutorials/ufw-essentials-common-firewall-rules-and-commands).
-```
+```bash
 $ sudo apt install ufw
 ```
 
 
 Here's a quick cheat sheet for what the validator needs:
-```
+```bash
 $ sudo ufw allow 22/tcp # We need ssh to work!
 $ sudo ufw allow 8000:10000/tcp # Really, we only need to allow the port range the validator is using; i.e. 8000:8020 (depending on your run script)
 $ sudo ufw allow 8000:10000/udp # Same as the above
@@ -90,7 +90,7 @@ $ sudo ufw enable
 ```
 
 You can always check the status of ufw with:
-```
+```bash
 $ sudo ufw status
 ```
 
@@ -99,7 +99,7 @@ $ sudo ufw status
 Good guide on this [here](https://docs.anza.xyz/operations/setup-a-validator#hard-drive-setup).
 
 Consolidated commands (assuming you have two NVMEs attached):
-```
+```bash
 $ sudo mkfs -t ext4 /dev/nvme0n1
 $ sudo mkfs -t ext4 /dev/nvme1n1
 $ sudo mkdir -p /mnt/ledger
@@ -125,12 +125,12 @@ Be sure to copy your validator identity and vote-account keypairs to your faiilo
 It's recommended to build from source - and it's good to know how to - so that's what we'll do now.
 
 Switch to your sol user:
-```
+```bash
 $ su - sol
 ```
 
 Make sure you have Rust installed for the `sol` user:
-```
+```bash
 curl https://sh.rustup.rs -sSf | sh
 source $HOME/.cargo/env
 rustup component add rustfmt
@@ -138,14 +138,13 @@ rustup update
 ```
 
 I like keeping things clean, so I put all of my repos and source code in `~/developer` - do as you please.
-
-```
+```bash
 $ mkdir developer
 $ cd developer
 ```
 
 Grab the release tag you want to run - these can be found [here](https://github.com/anza-xyz/agave/releases).
-```
+```bash
 $ export VERSION="2.0.18" # example
 $ wget "https://github.com/anza-xyz/agave/archive/refs/tags/v$VERSION.tar.gz"
 $ tar -xvzf "v$VERSION.tar.gz" && rm "v$VERSION.tar.gz"
@@ -154,14 +153,14 @@ $ scripts/cargo-install-all.sh --validator-only ~/.local/share/solana/install/re
 ```
 
 Now let's set the active solana release:
-```
+```bash
 $ ln -snf "/home/sol/.local/share/solana/install/releases/v$VERSION" /home/sol/.local/share/solana/install/active_release
 ```
 
 The above command links the release you just installed to the `active_release` path. This is just a convenient way to manage multiple releases - for upgrades etc.
 
 Finally, let's add the `active_release` path to your sol user's path:
-```
+```bash
 $ echo 'export PATH="/home/sol/.local/share/solana/install/active_release/bin":"$PATH"' >> ~/.bashrc
 $ source ~/.bashrc
 ```
@@ -207,7 +206,7 @@ WantedBy=multi-user.target
 ```
 
 To start it:
-```
+```bash
 sudo systemctl enable --now sol
 ```
 
@@ -218,11 +217,11 @@ sudo systemctl enable --now sol
 Finally, configure log rotation as shown [here](https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units).
 
 At this point, you should have a running validator (via systemd) with log rotation enabled. You can tail logs to see it running or use the monitor command:
-```
+```bash
 $ agave-validator --ledger /mnt/ledger/ monitor
 ```
 
 You can also use the catchup command to watch your validator catch up to the network:
-```
+```bash
 $ solana catchup -ut --our-localhost 8899  # be sure to use `-ut` here since this is a testnet validator
 ```
