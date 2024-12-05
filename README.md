@@ -86,7 +86,7 @@ Here's a quick cheat sheet for what the validator needs:
 sudo ufw allow 22/tcp # We need ssh to work!
 sudo ufw allow 8000:10000/tcp # Really, we only need to allow the port range the validator is using; i.e. 8000:8020 (depending on your run script)
 sudo ufw allow 8000:10000/udp # Same as the above
-# sudo ufw allow 8900,8899/tcp # If you're allowing RPC access - not recommended for mainnet
+# sudo ufw allow 8900,8899/tcp # If you're allowing RPC access and using a narrow range above - RPC is not recommended for mainnet
 sudo ufw enable
 ```
 
@@ -275,7 +275,7 @@ Once these scripts have completed you can use the `monitor` command on each node
 
 You can also check your validator's IP in the `gossip` command (it should match your testnet node):
 ```bash
-solana gossip -ut | grep $(solanan-keygen pubkey validator-keypair.json)
+solana gossip -ut | grep $(solana-keygen pubkey validator-keypair.json)
 ```
 
 If all is well, then you've successsfully failed over to your testnet node!
@@ -342,7 +342,7 @@ Follow the steps in the [failover section](#failover) to get your failover scrip
 
 Once you have the scripts set and both nodes are caught up, you can transition identities on the two nodes.
 
-From this point on you have 2 mainnet nodes, one with your actual identity set, running in the mainnet cluster and your off to the races of collecting more stake!
+From this point on you have 2 nodes, one with your actual identity set, running in the mainnet cluster and you're off to the races of collecting more stake!
 
 ## What Next?
 
