@@ -268,7 +268,7 @@ On both nodes you should have `initiate_failover.sh` and `complete_failover.sh` 
 
 Before running the failover, it's important to check if it's caught up - otherwise you'll experience downtime. You can do this with the `catchup` command shown [above](#monitoring-your-validator).
 
-If your testnet validator is all caught up, you can initiate failover by first by running `./initiate_failover.sh` on your active node and then (sequentially) `./complete_failover.sh` on your inactive node.
+If your testnet node is all caught up, you can initiate failover by first by running `./initiate_failover.sh` on your active node and then (sequentially) `./complete_failover.sh` on your inactive node.
 
 Once these scripts have completed you can use the `monitor` command on each node to confirm the new identities.
 
