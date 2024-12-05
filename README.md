@@ -224,6 +224,8 @@ sudo systemctl enable --now sol
 
 Finally, configure log rotation as shown [here](https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units).
 
+#### Monitoring your Validator
+
 At this point, you should have a running validator (via systemd) with log rotation enabled. You can tail logs to see it running or use the monitor command:
 ```bash
 agave-validator --ledger /mnt/ledger/ monitor
@@ -264,7 +266,7 @@ On both nodes you should have `initiate_failover.sh` and `complete_failover.sh` 
 
 #### Failover to your Testnet Node
 
-Before running the failover, it's important to check if it's caught up - otherwise you'll experience downtime. You can do this with the `catchup` command shown above.
+Before running the failover, it's important to check if it's caught up - otherwise you'll experience downtime. You can do this with the `catchup` command shown [above](#monitoring-your-validator).
 
 If your testnet validator is all caught up, you can initiate failover by first by running `./initiate_failover.sh` on your active node and then (sequentially) `./complete_failover.sh` on your inactive node.
 
