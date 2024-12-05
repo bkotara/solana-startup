@@ -301,6 +301,8 @@ rm -rf /mnt/ledger/*
 rm -rf /mnt/accounts/*
 ```
 
+Remember to copy over your mainnet vote account and identity keypairs before proceeding. These should be different than your testnet keypairs!
+
 #### Setup Jito-Solana
 
 For mainnet, we're going to run [Jito-Solana](https://jito-foundation.gitbook.io/mev/jito-solana/building-the-software). Be sure to grab the latest mainnet release from [here](https://github.com/jito-foundation/jito-solana/releases) and run the build via the git checkout flow as shown [here](https://jito-foundation.gitbook.io/mev/jito-solana/building-the-software#initial-setup).
