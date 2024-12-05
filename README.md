@@ -321,7 +321,7 @@ For your run script, you'll need a few updates for mainnet and jito. An example 
 
 You can use `agave-validator --help` to see various other run flags and descriptions. Values for the jito flags can be found [here](https://jito-foundation.gitbook.io/mev/jito-solana/command-line-arguments).
 
-For completeness purposes, I recommend starting your failover node as your primary mainnet validator (just like we did for testnet; i.e. using the primary identity instead of the junk one) and failing over to your actual mainnet node - practice is good - knowing things work is good.
+For completeness, I recommend starting your failover node as your primary mainnet validator (just like we did for testnet; i.e. using the primary identity instead of the junk one) and failing over to your actual mainnet node - practice is good - knowing things work is good.
 
 Once you have your script as you like, you can restart the systemd service:
 ```bash
@@ -329,3 +329,27 @@ sudo systemctl start sol.service
 ```
 
 *Note that grabbing an initial snapshot and the general boot process may take much longer on mainnet.*
+
+#### Setup your Mainnet Node
+
+Once again, we're at a rinse and repeat stage, but you're almost done.
+
+All you need to do is follow the setup on your mainnet node, but using the same version of Jito-Solana you chose [above](#setup-jito-solana).
+
+Be sure to use the same mainnet run script here, too. The only difference is you'll need to set your identity.json to the unstaked identity you create on the mainnet node.
+
+Follow the steps in the [failover section](#failover) to get your failover scripts setup on your mainnet node. Be sure to modify the scripts on your failover node so they point to your mainnet node instead of your testnet node.
+
+Once you have the scripts set and both nodes are caught up, you can transition identities on the two nodes.
+
+From this point on you have 2 mainnet nodes, one with your actual identity set, running in the mainnet cluster and your off to the races of collecting more stake!
+
+## What Next?
+
+You can check your validator's performance on various sites:
+- [STAKEWIZ](https://stakewiz.com/)
+- [Vortex](https://app.vx.tools/)
+
+*Note that your validator may not show up until you have some stake and have made it into the leader schedule.*
+
+If you'd like to stake with your validator, you can do so via the command line as shown [here](https://docs.anza.xyz/cli/examples/delegate-stake) or via the STAKEWIZ UI.
