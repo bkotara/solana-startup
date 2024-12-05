@@ -4,6 +4,7 @@ Some other super useful links:
 - [Official Docs](https://docs.anza.xyz/)
 - [Educational Workshop](https://www.youtube.com/playlist?list=PLilwLeBwGuK6jKrmn7KOkxRxS9tvbRa5p)
 - [Helius Setup Guide](https://www.helius.dev/blog/how-to-set-up-a-solana-validator)
+- [Identity Transition](https://pumpkins-pool.gitbook.io/pumpkins-pool)
 
 ## The Basic Idea
 
