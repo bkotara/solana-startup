@@ -274,8 +274,56 @@ If your testnet node is all caught up, you can initiate failover by first by run
 Once these scripts have completed you can use the `monitor` command on each node to confirm the new identities.
 
 You can also check your validator's IP in the `gossip` command (it should match your testnet node):
-```
+```bash
 solana gossip -ut | grep $(solanan-keygen pubkey validator-keypair.json)
 ```
 
 If all is well, then you've successsfully failed over to your testnet node!
+
+## Mainnet
+
+On to mainnet...
+
+#### Cleanup your Failover Node
+
+Now, let's go back to your failover node and tear down the testnet validator.
+
+We can stop the service:
+```bash
+sudo systemctl stop sol.service
+```
+
+Then, we can delete our testnet keypairs from this node - and the unstaked identity (we'll make a new one for mainnet).
+
+Finally, we can cleanup the attached drives:
+```bash
+rm -rf /mnt/ledger/*
+rm -rf /mnt/accounts/*
+```
+
+#### Setup Jito-Solana
+
+For mainnet, we're going to run [Jito-Solana](https://jito-foundation.gitbook.io/mev/jito-solana/building-the-software). Be sure to grab the latest mainnet release from [here](https://github.com/jito-foundation/jito-solana/releases) and run the build via the git checkout flow as shown [here](https://jito-foundation.gitbook.io/mev/jito-solana/building-the-software#initial-setup).
+
+It's always good to sanity check your solana version after running an install and `active_release` update:
+```bash
+solana --version
+```
+
+The output should confirm you have jito-solana installed:
+```
+solana-cli 2.0.18 (src:2f2ef44d; feat:607245837, client:JitoLabs)
+```
+
+For your run script, you'll need a few updates for mainnet and jito. An example can be found [here](./mainnet-validator.sh). Be sure to add in actual [known validators](https://docs.anza.xyz/operations/guides/validator-start/#known-validators)!
+
+You can use `agave-validator --help` to see various other run flags and descriptions. Values for the jito flags can be found [here](https://jito-foundation.gitbook.io/mev/jito-solana/command-line-arguments).
+
+For completeness purposes, I recommend starting your failover node as your primary mainnet validator (just like we did for testnet; i.e. using the primary identity instead of the junk one) and failing over to your actual mainnet node - practice is good - knowing things work is good.
+
+Once you have your script as you like, you can restart the systemd service:
+```bash
+sudo systemctl start sol.service
+```
+
+*Note that grabbing an initial snapshot and the general boot process may take much longer on mainnet.*

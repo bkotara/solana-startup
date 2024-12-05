@@ -1,0 +1,28 @@
+#!/bin/bash
+exec agave-validator \
+    --identity /home/sol/identity.json \
+    --vote-account /home/sol/vote-account-keypair.json \
+    --authorized-voter /home/sol/staked-identity.json \
+    --entrypoint entrypoint3.mainnet-beta.solana.com:8001 \
+    --entrypoint entrypoint4.mainnet-beta.solana.com:8001 \
+    --known-validator <PUBKEY1> \
+    --known-validator <PUBKEY2> \
+    --known-validator <PUBKEY3> \
+    --known-validator <PUBKEY4> \
+    --log /home/sol/agave-validator.log \
+    --ledger /mnt/ledger \
+    --accounts /mnt/accounts \
+    --snapshots /mnt/accounts/snapshots \
+    --limit-ledger-size \
+    --dynamic-port-range 8000-8020 \
+    --rpc-port 8899 \
+    --private-rpc \
+    --expected-genesis-hash 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d \
+    --wal-recovery-mode skip_any_corrupted_record \
+    --tip-payment-program-pubkey T1pyyaTNZsKv2WcRAB8oVnk93mLJw2XzjtVYqCsaHqt \
+    --tip-distribution-program-pubkey 4R3gSG8BpU4t19KYj8CfnbtRpnT8gtk4dvTHxVRwc2r7 \
+    --merkle-root-upload-authority GZctHpWXmsZC1YHACTGGcHhYxjdRqQvTpYkb9LMvxDib \
+    --block-engine-url https://ny.mainnet.block-engine.jito.wtf \
+    --shred-receiver-address 141.98.216.96:1002 \
+    --commission-bps 800 \
+    --relayer-url http://ny.mainnet.relayer.jito.wtf:8100
