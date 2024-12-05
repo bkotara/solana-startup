@@ -121,7 +121,7 @@ No need to worry about [this](https://docs.anza.xyz/operations/setup-a-validator
 
 #### Validator Install
 
-Be sure to copy your validator identity and vote-account keypairs to your faiilover node. Reminder: your authorized withdrawer keypair should never be on your validator node - there is no need and it only adds security concerns.
+Be sure to copy your validator identity and vote-account keypairs to your failover node. Reminder: your authorized withdrawer keypair should never be on your validator node - there is no need and it only adds security concerns.
 
 Also, at this point we can begin integrating the failover requirements, one of which is having a junk identity on both your primay and failover node. [Here](https://pumpkins-pool.gitbook.io/pumpkins-pool#generating-junk-identities) are the docs for this. Note that each node should have its own junk identity.
 
