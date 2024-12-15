@@ -281,7 +281,32 @@ sudo systemctl enable --now sol
 a good DigitalOcean guide on how to use systemctl.
 
 Finally, configure log rotation as shown
-[here](https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units).
+[here](https://www.digitalocean.com/community/tutorials/how-to-manage-logfiles-with-logrotate-on-ubuntu-20-04).
+
+Choose a log rotation strategy to your preference.  Here is a possible starting option:
+```bash
+sudo vi /etc/logrotate.d/solana
+/home/sol/agave-validator.log {
+  daily                # rotate log daily
+  rotate 7             # seven day record
+  missingok            # ok if the log does not exist
+  compress             # compress log files
+  create 0644 sol sol  # create new file with user:group
+  postrotate 
+    systemctl kill -s USR1 sol.service # signal to reopen log file
+  endscript
+}
+```
+
+Restart the logrotate service:
+```bash
+sudo systemctl restart logrotate
+```
+
+Check your settings with a dry-run:
+```bash
+sudo logrotate --debug /etc/logrotate.d/solana
+```
 
 #### Monitoring your Validator
 
